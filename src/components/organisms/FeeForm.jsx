@@ -8,13 +8,14 @@ import { feeService } from "@/services/api/feeService";
 import { clientService } from "@/services/api/clientService";
 
 const FeeForm = ({ fee, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     clientId: "",
     description: "",
     amount: "",
     dueDate: "",
     category: "Consulting",
-    isRecurring: false
+    isRecurring: false,
+    note: ""
   });
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,13 +28,14 @@ const FeeForm = ({ fee, onSuccess, onCancel }) => {
 
   useEffect(() => {
     if (fee) {
-      setFormData({
+setFormData({
         clientId: fee.clientId?.toString() || "",
         description: fee.description || "",
         amount: fee.amount?.toString() || "",
         dueDate: fee.dueDate || "",
         category: fee.category || "Consulting",
-        isRecurring: fee.isRecurring || false
+        isRecurring: fee.isRecurring || false,
+        note: fee.note || ""
       });
     }
   }, [fee]);
@@ -153,6 +155,19 @@ const FeeForm = ({ fee, onSuccess, onCancel }) => {
           onChange={handleChange}
           placeholder="Fee description"
           error={errors.description}
+        />
+</FormField>
+
+      <FormField
+        label="Note"
+      >
+        <Input
+          name="note"
+          value={formData.note}
+          onChange={handleChange}
+          placeholder="Additional notes (optional)"
+          as="textarea"
+          rows={3}
         />
       </FormField>
 

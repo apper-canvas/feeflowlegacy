@@ -22,12 +22,13 @@ export const feeService = {
     return fees.filter(f => f.clientId === parseInt(clientId)).map(fee => ({ ...fee }));
   },
 
-  async create(feeData) {
+async create(feeData) {
     await delay(400);
     const newFee = {
       ...feeData,
       Id: Math.max(...fees.map(f => f.Id)) + 1,
-      status: "pending"
+      status: "pending",
+      note: feeData.note || ""
     };
     fees.push(newFee);
     
