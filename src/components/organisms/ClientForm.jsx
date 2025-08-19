@@ -18,11 +18,11 @@ const ClientForm = ({ client, onSuccess, onCancel }) => {
 
   useEffect(() => {
     if (client) {
-      setFormData({
-        name: client.name || "",
-        email: client.email || "",
-        phone: client.phone || "",
-        status: client.status || "active"
+setFormData({
+        name: client.Name || "",
+        email: client.email_c || "",
+        phone: client.phone_c || "",
+        status: client.status_c || "active"
       });
     }
   }, [client]);
@@ -54,7 +54,12 @@ const ClientForm = ({ client, onSuccess, onCancel }) => {
     setLoading(true);
     try {
       if (client) {
-        await clientService.update(client.Id, formData);
+await clientService.update(client.Id, {
+          Name: formData.name,
+          email_c: formData.email,
+          phone_c: formData.phone,
+          status_c: formData.status
+        });
         toast.success("Client updated successfully!");
       } else {
         await clientService.create(formData);

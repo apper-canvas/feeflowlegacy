@@ -44,13 +44,13 @@ const Dashboard = () => {
         paymentService.getAll()
       ]);
 
-      const totalCollected = payments.reduce((sum, payment) => sum + payment.amount, 0);
+const totalCollected = payments.reduce((sum, payment) => sum + (payment.amount_c || 0), 0);
       const totalPending = fees
-        .filter(fee => fee.status === "pending")
-        .reduce((sum, fee) => sum + fee.amount, 0);
+        .filter(fee => fee.status_c === "pending")
+        .reduce((sum, fee) => sum + (fee.amount_c || 0), 0);
       const totalOverdue = fees
-        .filter(fee => fee.status === "overdue")
-        .reduce((sum, fee) => sum + fee.amount, 0);
+        .filter(fee => fee.status_c === "overdue")
+        .reduce((sum, fee) => sum + (fee.amount_c || 0), 0);
 
       setData({
         clients,
@@ -73,38 +73,37 @@ const Dashboard = () => {
 
   const getRecentActivities = () => {
     const activities = [];
-    
-    // Recent payments
+// Recent payments
     data.payments
-      .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate))
+      .sort((a, b) => new Date(b.payment_date_c) - new Date(a.payment_date_c))
       .slice(0, 3)
       .forEach(payment => {
-        const fee = data.fees.find(f => f.Id === payment.feeId);
-        const client = data.clients.find(c => c.Id === fee?.clientId);
+        const fee = data.fees.find(f => f.Id === (payment.fee_id_c?.Id || payment.fee_id_c));
+        const client = data.clients.find(c => c.Id === (fee?.client_id_c?.Id || fee?.client_id_c));
         activities.push({
           id: `payment-${payment.Id}`,
-          type: "payment",
-          description: `Payment received from ${client?.name || "Unknown Client"}`,
-          amount: payment.amount,
-          date: payment.paymentDate,
+          id: `payment-${payment.Id}`,
+description: `Payment received from ${client?.Name || "Unknown Client"}`,
+          amount: payment.amount_c,
+          date: payment.payment_date_c,
           icon: "CreditCard",
           color: "text-green-600"
         });
       });
 
-    // Recent overdue fees
+// Recent overdue fees
     data.fees
-      .filter(fee => fee.status === "overdue")
-      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+      .filter(fee => fee.status_c === "overdue")
+      .sort((a, b) => new Date(a.due_date_c) - new Date(b.due_date_c))
       .slice(0, 2)
       .forEach(fee => {
-        const client = data.clients.find(c => c.Id === fee.clientId);
+        const client = data.clients.find(c => c.Id === (fee.client_id_c?.Id || fee.client_id_c));
         activities.push({
           id: `overdue-${fee.Id}`,
           type: "overdue",
-          description: `Overdue fee from ${client?.name || "Unknown Client"}`,
-          amount: fee.amount,
-          date: fee.dueDate,
+          description: `Overdue fee from ${client?.Name || "Unknown Client"}`,
+          amount: fee.amount_c,
+          date: fee.due_date_c,
           icon: "AlertTriangle",
           color: "text-red-600"
         });
@@ -115,11 +114,11 @@ const Dashboard = () => {
       .slice(0, 5);
   };
 
-  const getPendingActions = () => {
+const getPendingActions = () => {
     const actions = [];
     
-    const overdueCount = data.fees.filter(fee => fee.status === "overdue").length;
-    const pendingCount = data.fees.filter(fee => fee.status === "pending").length;
+    const overdueCount = data.fees.filter(fee => fee.status_c === "overdue").length;
+    const pendingCount = data.fees.filter(fee => fee.status_c === "pending").length;
     
     if (overdueCount > 0) {
       actions.push({
@@ -225,7 +224,7 @@ const Dashboard = () => {
         <MetricCard
           title="Pending Payments"
           value={data.metrics.totalPending}
-          change={`${data.fees.filter(f => f.status === "pending").length} fees`}
+change={`${data.fees.filter(f => f.status_c === "pending").length} fees`}
           changeType="neutral"
           icon="Clock"
           iconColor="text-amber-600"
@@ -233,7 +232,7 @@ const Dashboard = () => {
         <MetricCard
           title="Overdue Amount"
           value={data.metrics.totalOverdue}
-          change={`${data.fees.filter(f => f.status === "overdue").length} fees`}
+change={`${data.fees.filter(f => f.status_c === "overdue").length} fees`}
           changeType="negative"
           icon="AlertTriangle"
           iconColor="text-red-600"
@@ -241,7 +240,7 @@ const Dashboard = () => {
         <MetricCard
           title="Total Clients"
           value={data.metrics.totalClients}
-          change={`${data.clients.filter(c => c.status === "active").length} active`}
+change={`${data.clients.filter(c => c.status_c === "active").length} active`}
           changeType="positive"
           icon="Users"
           iconColor="text-primary-600"

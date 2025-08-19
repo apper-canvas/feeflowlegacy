@@ -29,13 +29,13 @@ const [formData, setFormData] = useState({
   useEffect(() => {
     if (fee) {
 setFormData({
-        clientId: fee.clientId?.toString() || "",
-        description: fee.description || "",
-        amount: fee.amount?.toString() || "",
-        dueDate: fee.dueDate || "",
-        category: fee.category || "Consulting",
-        isRecurring: fee.isRecurring || false,
-        note: fee.note || ""
+        clientId: (fee.client_id_c?.Id || fee.client_id_c)?.toString() || "",
+        description: fee.description_c || "",
+        amount: fee.amount_c?.toString() || "",
+        dueDate: fee.due_date_c || "",
+        category: fee.category_c || "Consulting",
+        isRecurring: fee.is_recurring_c || false,
+        note: fee.note_c || ""
       });
     }
   }, [fee]);
@@ -88,8 +88,13 @@ setFormData({
     try {
       const feeData = {
         ...formData,
-        clientId: parseInt(formData.clientId),
-        amount: parseFloat(formData.amount)
+client_id_c: parseInt(formData.clientId),
+        description_c: formData.description,
+        amount_c: parseFloat(formData.amount),
+        due_date_c: formData.dueDate,
+        category_c: formData.category,
+        is_recurring_c: formData.isRecurring,
+        note_c: formData.note
       };
 
       if (fee) {
@@ -137,8 +142,8 @@ setFormData({
         >
           <option value="">Select a client</option>
           {clients.map((client) => (
-            <option key={client.Id} value={client.Id}>
-              {client.name}
+<option key={client.Id} value={client.Id}>
+              {client.Name}
             </option>
           ))}
         </Select>

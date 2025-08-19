@@ -58,16 +58,16 @@ const Clients = () => {
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(
+filtered = filtered.filter(
         client =>
-          client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          client.email.toLowerCase().includes(searchTerm.toLowerCase())
+          client.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          client.email_c?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Filter by status
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(client => client.status === statusFilter);
+if (statusFilter !== "all") {
+      filtered = filtered.filter(client => client.status_c === statusFilter);
     }
 
     setFilteredClients(filtered);
@@ -205,23 +205,23 @@ const Clients = () => {
               <Card hover className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+<div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
                       <span className="text-white font-semibold text-lg">
-                        {client.name.charAt(0).toUpperCase()}
+                        {client.Name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-gray-900">{client.name}</h3>
+<div className="space-y-1">
+                      <h3 className="font-semibold text-gray-900">{client.Name}</h3>
                       <div className="flex items-center space-x-4 text-sm text-gray-600">
                         <div className="flex items-center space-x-1">
                           <ApperIcon name="Mail" className="h-4 w-4" />
-                          <span>{client.email}</span>
+                          <span>{client.email_c}</span>
                         </div>
-                        {client.phone && (
+                        {client.phone_c && (
                           <div className="flex items-center space-x-1">
                             <ApperIcon name="Phone" className="h-4 w-4" />
-                            <span>{client.phone}</span>
+                            <span>{client.phone_c}</span>
                           </div>
                         )}
                       </div>
@@ -229,22 +229,22 @@ const Clients = () => {
                   </div>
 
                   <div className="flex items-center space-x-6">
-                    <div className="text-right">
+<div className="text-right">
                       <div className="text-sm text-gray-600">Total Due</div>
                       <div className="font-semibold text-gray-900">
-                        ${client.totalDue.toLocaleString()}
+                        ${(client.total_due_c || 0).toLocaleString()}
                       </div>
                     </div>
                     
                     <div className="text-right">
                       <div className="text-sm text-gray-600">Total Paid</div>
                       <div className="font-semibold text-green-600">
-                        ${client.totalPaid.toLocaleString()}
+                        ${(client.total_paid_c || 0).toLocaleString()}
                       </div>
                     </div>
 
-                    <Badge variant={getBadgeVariant(client.status)}>
-                      {client.status}
+<Badge variant={getBadgeVariant(client.status_c)}>
+                      {client.status_c}
                     </Badge>
 
                     <div className="flex items-center space-x-2">

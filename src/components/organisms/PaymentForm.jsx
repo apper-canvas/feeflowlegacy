@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
-import FormField from "@/components/molecules/FormField";
 import { paymentService } from "@/services/api/paymentService";
 import { feeService } from "@/services/api/feeService";
 import { clientService } from "@/services/api/clientService";
+import FormField from "@/components/molecules/FormField";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Select from "@/components/atoms/Select";
 
 const PaymentForm = ({ payment, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
-    feeId: "",
+feeId: "",
     amount: "",
     paymentDate: new Date().toISOString().split("T")[0],
     method: "Bank Transfer",
@@ -27,12 +28,12 @@ const PaymentForm = ({ payment, onSuccess, onCancel }) => {
 
   useEffect(() => {
     if (payment) {
-      setFormData({
-        feeId: payment.feeId?.toString() || "",
-        amount: payment.amount?.toString() || "",
-        paymentDate: payment.paymentDate || new Date().toISOString().split("T")[0],
-        method: payment.method || "Bank Transfer",
-        reference: payment.reference || ""
+setFormData({
+        feeId: (payment.fee_id_c?.Id || payment.fee_id_c)?.toString() || "",
+        amount: payment.amount_c?.toString() || "",
+        paymentDate: payment.payment_date_c || new Date().toISOString().split("T")[0],
+        method: payment.method_c || "Bank Transfer",
+        reference: payment.reference_c || ""
       });
     }
   }, [payment]);
@@ -44,13 +45,13 @@ const PaymentForm = ({ payment, onSuccess, onCancel }) => {
         clientService.getAll()
       ]);
       
-      const unpaidFees = feesData
-        .filter(fee => fee.status === "pending" || fee.status === "overdue")
+const unpaidFees = feesData
+        .filter(fee => fee.status_c === "pending" || fee.status_c === "overdue")
         .map(fee => {
-          const client = clientsData.find(c => c.Id === fee.clientId);
+          const client = clientsData.find(c => c.Id === (fee.client_id_c?.Id || fee.client_id_c));
           return {
             ...fee,
-            clientName: client ? client.name : "Unknown Client"
+            clientName: client ? client.Name : "Unknown Client"
           };
         });
       
@@ -91,10 +92,14 @@ const PaymentForm = ({ payment, onSuccess, onCancel }) => {
       return;
     }
 
-    setLoading(true);
+setLoading(true);
     try {
       const paymentData = {
-        ...formData,
+        fee_id_c: parseInt(formData.feeId),
+        amount_c: parseFloat(formData.amount),
+        payment_date_c: formData.paymentDate,
+        method_c: formData.method,
+        reference_c: formData.reference,
         feeId: parseInt(formData.feeId),
         amount: parseFloat(formData.amount)
       };
@@ -120,10 +125,10 @@ const PaymentForm = ({ payment, onSuccess, onCancel }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Auto-fill amount when fee is selected
-    if (name === "feeId" && value) {
+if (name === "feeId" && value) {
       const selectedFee = fees.find(f => f.Id === parseInt(value));
       if (selectedFee) {
-        setFormData(prev => ({ ...prev, amount: selectedFee.amount.toString() }));
+        setFormData(prev => ({ ...prev, amount: selectedFee.amount_c?.toString() || "" }));
       }
     }
     
@@ -148,9 +153,9 @@ const PaymentForm = ({ payment, onSuccess, onCancel }) => {
           disabled={loadingFees}
         >
           <option value="">Select a fee</option>
-          {fees.map((fee) => (
+{fees.map((fee) => (
             <option key={fee.Id} value={fee.Id}>
-              {fee.clientName} - {fee.description} (${fee.amount})
+              {fee.clientName} - {fee.description_c} (${fee.amount_c})
             </option>
           ))}
         </Select>
