@@ -174,13 +174,12 @@ export const clientService = {
       const successfulDeletions = response.results?.filter(result => result.success) || [];
       return successfulDeletions.length > 0;
     } catch (error) {
-      if (error?.response?.data?.message) {
+if (error?.response?.data?.message) {
         console.error("Error deleting client:", error?.response?.data?.message);
       } else {
         console.error(error);
       }
       return false;
-return false;
     }
   }
 };
